@@ -80,7 +80,6 @@ var letters string = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 var space string = " "
 
 func score(in []byte) int {
-	ret := 0
 	freq := map[byte]int{}
 	for _, x := range in {
 		if val, ok := freq[x]; ok {
@@ -90,28 +89,17 @@ func score(in []byte) int {
 		}
 	}
 	n := len(in)
-	if freq['e']+freq['E'] > n/20 {
-		ret += freq['e'] + freq['E']
+	letterCount := 0
+	for _, l := range letters {
+		letterCount += freq[letter]
 	}
-	if freq['o']+freq['O'] > n/20 {
-		ret += freq['o'] + freq['O']
-	}
-	if freq['a']+freq['A'] > n/20 {
-		ret += freq['a'] + freq['A']
-	}
-	if freq['i']+freq['I'] > n/20 {
-		ret += freq['i'] + freq['I']
-	}
-	if _, ok := freq[' ']; !ok {
-		ret -= 10
-	}
-	nonPrint := []byte{'&', '$', '%', '{', '}', '\n', '+', '=', '*', '^', '/', '\\', '@', '(', ')', '[', ']', '_', '#', '<', '>'}
-	for _, bad := range nonPrint {
-		if _, exists := freq[bad]; exists {
-			ret -= 10
-		}
-	}
-
+	ret := float(64) / letterCount
+	// nonPrint := []byte{'&', '$', '%', '{', '}', '\n', '+', '=', '*', '^', '/', '\\', '@', '(', ')', '[', ']', '_', '#', '<', '>'}
+	// for _, bad := range nonPrint {
+	// 	if _, exists := freq[bad]; exists {
+	// 		ret -= 10
+	// 	}
+	// }
 	return ret
 }
 
