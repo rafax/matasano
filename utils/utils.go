@@ -24,7 +24,7 @@ func FindCipher(a string, atLeast int) []string {
 	enc, _ := DecodeHex(a)
 	done := false
 	best := map[string]int{}
-	bestCap := 256
+	bestCap := 3
 	var minBest string
 	var minBestScore int
 	buf := make([]byte, len(enc))
@@ -34,12 +34,13 @@ func FindCipher(a string, atLeast int) []string {
 		}
 		score := score(buf)
 		if score > atLeast {
+			key := string(i) + ": '" + string(buf) + "'"
 			if len(best) < bestCap {
-				best[string(i)+": "+string(buf)] = score
+				best[key] = score
 			} else {
 				if score > minBestScore {
 					delete(best, minBest)
-					best[string(i)+": "+string(buf)] = score
+					best[key] = score
 				}
 				minBest, minBestScore = findMin(best)
 			}
@@ -77,7 +78,6 @@ func findMin(m map[string]int) (string, int) {
 }
 
 var letters string = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-var space string = " "
 
 func score(in []byte) int {
 	freq := map[byte]int{}
@@ -88,18 +88,18 @@ func score(in []byte) int {
 			freq[x] = 1
 		}
 	}
-	n := len(in)
 	letterCount := 0
-	for _, l := range letters {
-		letterCount += freq[letter]
+	for _, l := range []byte(letters) {
+		letterCount += freq[l]
 	}
-	ret := float(64) / letterCount
-	// nonPrint := []byte{'&', '$', '%', '{', '}', '\n', '+', '=', '*', '^', '/', '\\', '@', '(', ')', '[', ']', '_', '#', '<', '>'}
-	// for _, bad := range nonPrint {
-	// 	if _, exists := freq[bad]; exists {
-	// 		ret -= 10
-	// 	}
-	// }
+	ret := letterCount
+	ret += freq[' ']
+	nonPrint := []byte{'&', '$', '%', '{', '}', '+', '=', '*', '^', '/', '\\', '@', '(', ')', '[', ']', '_', '#', '<', '>', '-'}
+	for _, bad := range nonPrint {
+		if _, exists := freq[bad]; exists {
+			ret -= 10
+		}
+	}
 	return ret
 }
 
