@@ -127,3 +127,15 @@ func Encrypt(message, key []byte) []byte {
 	}
 	return res
 }
+
+func HammingDistance(a, b []byte) int {
+	cnt := 0
+	for pos := range a {
+		for i := uint(0); i < 8; i++ {
+			if a[pos]&(1<<i) != b[pos]&(1<<i) {
+				cnt++
+			}
+		}
+	}
+	return cnt
+}
