@@ -7,10 +7,10 @@ import (
 )
 
 func main() {
-	var ip = flag.Int("m", 20, "Minimum score")
+	var ip = flag.Int("m", 25, "Minimum score")
 	flag.Parse()
 
-	lines, err := utils.ReadLines("in/4.txt")
+	lines, err := utils.ReadLines("1/in/4.txt")
 	if err != nil {
 		panic(err)
 	}

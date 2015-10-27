@@ -11,5 +11,4 @@ func main() {
 
 	e := base64.StdEncoding.EncodeToString(res)
 	fmt.Println(e)
-
 }
