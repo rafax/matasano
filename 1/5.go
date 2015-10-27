@@ -7,5 +7,5 @@ import (
 )
 
 func main() {
-	fmt.Println(hex.EncodeToString(utils.Encrypt([]byte("Burning 'em, if you ain't quick and nimble\nI go crazy when I hear a cymbal"), []byte("ICE"))))
+	fmt.Println(hex.EncodeToString(utils.XorEncrypt([]byte("Burning 'em, if you ain't quick and nimble\nI go crazy when I hear a cymbal"), []byte("ICE"))))
 }

@@ -118,7 +118,7 @@ func ReadLines(path string) ([]string, error) {
 	return lines, scanner.Err()
 }
 
-func Encrypt(message, key []byte) []byte {
+func XorEncrypt(message, key []byte) []byte {
 	res := make([]byte, len(message))
 	i := 0
 	for pos, x := range message {
