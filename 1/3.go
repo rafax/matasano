@@ -10,6 +10,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	candidates := utils.FindCipher(lines[0], 30)
+	dec, _ := utils.DecodeHex(lines[0])
+	candidates := utils.FindCipher(dec, 30)
 	fmt.Println(candidates)
 }

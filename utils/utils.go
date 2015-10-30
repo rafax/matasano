@@ -20,8 +20,7 @@ func DecodeHex(a string) ([]byte, error) {
 	return hex.DecodeString(a)
 }
 
-func FindCipher(a string, atLeast int) []string {
-	enc, _ := DecodeHex(a)
+func FindCipher(enc []byte, atLeast int) []string {
 	done := false
 	best := map[string]int{}
 	bestCap := 3
