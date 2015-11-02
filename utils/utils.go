@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"encoding/hex"
 	"os"
+	"sort"
 )
 
 func Xor(left, right string) string {
@@ -20,21 +21,20 @@ func DecodeHex(a string) ([]byte, error) {
 	return hex.DecodeString(a)
 }
 
-func FindCipher(a string, atLeast int) []string {
-	enc, _ := DecodeHex(a)
+func FindCipher(enc []byte, atLeast int) []KeyEncoding {
 	done := false
-	best := map[string]int{}
+	best := map[KeyEncoding]int{}
 	bestCap := 3
-	var minBest string
+	var minBest KeyEncoding
 	var minBestScore int
 	buf := make([]byte, len(enc))
 	for i := byte(0); !done; {
 		for pos, val := range enc {
 			buf[pos] = val ^ i
 		}
-		score := score(buf)
+		score := Score(buf)
 		if score > atLeast {
-			key := string(i) + ": '" + string(buf) + "'"
+			key := KeyEncoding{Key: string(i), Encoding: string(buf), Score: score}
 			if len(best) < bestCap {
 				best[key] = score
 			} else {
@@ -51,15 +51,28 @@ func FindCipher(a string, atLeast int) []string {
 			done = true
 		}
 	}
-	res := []string{}
+	res := []KeyEncoding{}
 	for k := range best {
 		res = append(res, k)
 	}
+	sort.Sort(sort.Reverse(KeyEncodings(res)))
 	return res
 }
 
-func findMin(m map[string]int) (string, int) {
-	var min string
+type KeyEncoding struct {
+	Key      string
+	Encoding string
+	Score    int
+}
+
+type KeyEncodings []KeyEncoding
+
+func (a KeyEncodings) Len() int           { return len(a) }
+func (a KeyEncodings) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a KeyEncodings) Less(i, j int) bool { return a[i].Score < a[j].Score }
+
+func findMin(m map[KeyEncoding]int) (KeyEncoding, int) {
+	var min KeyEncoding
 	var minScore int
 	started := false
 	for k, v := range m {
@@ -79,7 +92,7 @@ func findMin(m map[string]int) (string, int) {
 
 var letters string = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-func score(in []byte) int {
+func Score(in []byte) int {
 	freq := map[byte]int{}
 	for _, x := range in {
 		if val, ok := freq[x]; ok {
@@ -120,10 +133,8 @@ func ReadLines(path string) ([]string, error) {
 
 func XorEncrypt(message, key []byte) []byte {
 	res := make([]byte, len(message))
-	i := 0
 	for pos, x := range message {
-		res[pos] = x ^ key[i]
-		i = (i + 1) % len(key)
+		res[pos] = x ^ key[pos%len(key)]
 	}
 	return res
 }
