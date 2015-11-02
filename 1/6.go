@@ -3,23 +3,27 @@ package main
 import (
 	"encoding/base64"
 	"errors"
+	"flag"
 	"fmt"
 	"math"
 	"sort"
 
-	"github.com/rafax/matasano/utils"
+	"../utils"
+)
+
+var (
+	MinKeyLength int = 2
+	MaxKeyLength int = 40
 )
 
 func main() {
-	lines, _ := utils.ReadLines("1/in/6.txt")
-	base64text := []byte{}
-	for _, line := range lines {
-		base64text = append(base64text, []byte(line)...)
+	in := flag.String("f", "1/in/6.txt", "Input file")
+	text, err := readInput(in)
+	if err != nil {
+		panic(err)
 	}
-	text := make([]byte, base64.StdEncoding.DecodedLen(len(base64text)))
-	base64.StdEncoding.Decode(text, base64text)
-	dist := make(KeyScores, 0, 40)
-	for i := 2; i <= int(math.Min(40, float64(len(text)/4))); i++ {
+	dist := make(KeyScores, 0, MaxKeyLength)
+	for i := MinKeyLength; i <= int(math.Min(float64(MaxKeyLength), float64(len(text)/4))); i++ {
 		score := avgDistance(text, i)
 		dist = append(dist, KeyScore{i, score})
 	}
@@ -37,6 +41,7 @@ func main() {
 	fmt.Println(scored[0].Encoding)
 }
 
+// buildKey tries to find a XOR cipher for each of the ranges and combines them to form a key
 func buildKey(ranges [][]byte, keySize int) ([]byte, error) {
 	key := make([]byte, keySize)
 	for i, r := range ranges {
@@ -57,12 +62,29 @@ func avgDistance(text []byte, i int) float32 {
 		float32(utils.HammingDistance(text[2*i:3*i], text[i:2*i]))/float32(i))
 }
 
+// divide splits the text byte array into keySize of byte ranges
+// divide(ABDC,2) -> [[A,C],[B,D]]
 func divide(text []byte, keySize int) [][]byte {
 	ranges := make([][]byte, keySize)
 	for i, v := range text {
 		ranges[i%keySize] = append(ranges[i%keySize], v)
 	}
 	return ranges
+}
+
+// readInput reads the input from specified file, converts it to byte array and base64 decodes it
+func readInput(inFile *string) ([]byte, error) {
+	lines, err := utils.ReadLines(*inFile)
+	if err != nil {
+		return nil, err
+	}
+	base64text := []byte{}
+	for _, line := range lines {
+		base64text = append(base64text, []byte(line)...)
+	}
+	text := make([]byte, base64.StdEncoding.DecodedLen(len(base64text)))
+	base64.StdEncoding.Decode(text, base64text)
+	return text, nil
 }
 
 type KeyScore struct {

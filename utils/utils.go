@@ -133,10 +133,8 @@ func ReadLines(path string) ([]string, error) {
 
 func XorEncrypt(message, key []byte) []byte {
 	res := make([]byte, len(message))
-	i := 0
 	for pos, x := range message {
-		res[pos] = x ^ key[i]
-		i = (i + 1) % len(key)
+		res[pos] = x ^ key[pos%len(key)]
 	}
 	return res
 }
