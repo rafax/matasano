@@ -12,25 +12,15 @@ import (
 func main() {
 	in := flag.String("f", "in/1_7.txt", "Input file")
 	flag.Parse()
-	fmt.Println(*in)
-	//text, _ := readInput(in)
-	src := []byte("ATOS PORTOS KAKA DEMONA DEMONA!!")
+	text, _ := readInput(in)
 	key := []byte("YELLOW SUBMARINE")
 	ciph, _ := aes.NewCipher(key)
 	bs := ciph.BlockSize()
-	dst := make([]byte, len(src))
-	decrypted := make([]byte, len(src))
-	tmp := dst
-	for len(src) > 0 {
-		ciph.Encrypt(tmp, src[:bs])
-		src = src[bs:]
-		tmp = tmp[bs:]
-	}
-	fmt.Println(dst)
-	tmp = decrypted
-	for len(dst) > 0 {
-		ciph.Decrypt(tmp, dst[:bs])
-		dst = dst[bs:]
+	decrypted := make([]byte, len(text))
+	tmp := decrypted
+	for len(text) > 0 {
+		ciph.Decrypt(tmp, text[:bs])
+		text = text[bs:]
 		tmp = tmp[bs:]
 	}
 	fmt.Println(string(decrypted))
