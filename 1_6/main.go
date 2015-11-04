@@ -17,7 +17,7 @@ var (
 )
 
 func main() {
-	in := flag.String("f", "1/in/6.txt", "Input file")
+	in := flag.String("f", "1_6/in.txt", "Input file")
 	text, err := readInput(in)
 	if err != nil {
 		panic(err)

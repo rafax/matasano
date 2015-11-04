@@ -10,22 +10,22 @@ func TestHammingDistance(t *testing.T) {
 }
 
 func TestFindMin_Standard(t *testing.T) {
-	in := map[string]int{
-		"a": 123,
-		"b": -1,
-		"c": 122,
-		"d": 0,
+	in := map[KeyEncoding]int{
+		KeyEncoding{Key: "a"}: 123,
+		KeyEncoding{Key: "b"}: -1,
+		KeyEncoding{Key: "c"}: 122,
+		KeyEncoding{Key: "d"}: 0,
 	}
 	k, v := findMin(in)
-	if k != "b" || v != -1 {
+	if k.Key != "b" || v != -1 {
 		t.Errorf("Unexpected minimum %v -> %v", k, v)
 	}
 }
 
 func TestFindMin_One(t *testing.T) {
-	in := map[string]int{"one": 1}
+	in := map[KeyEncoding]int{KeyEncoding{Key: "one"}: 123}
 	k, v := findMin(in)
-	if k != "one" || v != 1 {
+	if k.Key != "one" || v != 123 {
 		t.Errorf("Unexpected minimum %v -> %v", k, v)
 	}
 }
