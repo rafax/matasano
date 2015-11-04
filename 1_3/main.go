@@ -1,12 +1,13 @@
 package main
 
 import (
-	"../utils"
 	"fmt"
+
+	"../utils"
 )
 
 func main() {
-	lines, err := utils.ReadLines("1/in/3.txt")
+	lines, err := utils.ReadLines("1_3/in.txt")
 	if err != nil {
 		panic(err)
 	}

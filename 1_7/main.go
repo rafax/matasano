@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	in := flag.String("f", "in/1_7.txt", "Input file")
+	in := flag.String("f", "1_7/in.txt", "Input file")
 	flag.Parse()
 	text, _ := readInput(in)
 	key := []byte("YELLOW SUBMARINE")
